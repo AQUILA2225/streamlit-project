@@ -107,7 +107,7 @@ def view_students():
     st.header("Student List")
 
     con = dbConnection()
-    curObj = con.cursor()
+    # curObj = con.cursor()
 
     query = "select * from student"
     # curObj.execute(query)
@@ -125,20 +125,21 @@ def view_students():
     #     st.warning("No student records found")
     # curObj.close()
     con.close()
-    
+
+
 def update_student():
     st.header("Update Student")
-    
+
     id = st.number_input("Enter Student id to Update")
-    
+
     if st.button("Fetch Student"):
         con = dbConnection()
         curObj = con.cursor()
-        
+
         query = "select * from student where id=%s"
         curObj.execute(query, (id,))
         data = curObj.fetchone()
-        
+
         if data:
             # pass
             st.session_state["update_data"] = data
@@ -146,44 +147,41 @@ def update_student():
             st.error("Student not found")
         curObj.close()
         con.close()
-        
+
     # st.write("Session State:", st.session_state)
-        
+
     if "update_data" in st.session_state:
         data = st.session_state["update_data"]
-        
+
         name = st.text_input("Enter Name", value=data[1])
         age = st.number_input("Enter Age", value=data[2])
         email = st.text_input("Enter Email", value=data[3])
         course = st.text_input("Enter Course", value=data[4])
-        
+
         if st.button("Update Student"):
             con = dbConnection()
             curObj = con.cursor()
-            
+
             query = """
             update student
             set name=%s, age=%s, email=%s, course=%s
             where id=%s
             """
-            
+
             values = (name, age, email, course, id)
-            
+
             curObj.execute(query, values)
             con.commit() 
-                
+
             st.success("Studdent updated successfully!")
-            
             curObj.close()
             con.close()
-        
         # del st.session_state["update_data"]
         # st.rerun()
-        
         # if "update_data" in st.session_state:
         #     if st.button("Back"):
         #         del st.session_state["update_data"]
-        #         st.rerun() 
+        #         st.rerun()
 
 
 if menu == "Home":
@@ -191,12 +189,12 @@ if menu == "Home":
 
 elif menu == "Add Student":
     add_students()
-    
+
 elif menu == "View Students":
     view_students()
-    
+
 elif menu == "Update Student":
     update_student()
-    
+
 elif menu == "Delete Student":
     st.info("Delete feature coming soon")
