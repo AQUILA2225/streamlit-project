@@ -184,6 +184,63 @@ def update_student():
         #         st.rerun()
 
 
+def delete_student():
+    st.header("Delete Student")
+    
+    id = int(st.number_input("Enter Student ID to Delete", step=1))
+    
+    if st.button("Fetch Student"):
+        con = dbConnection()
+        curObj = con.cursor()
+        
+        query = "select * from student where id = %s"
+        curObj.execute(query,(id,))
+        data = curObj.fetchone() # gets single record 
+        
+        if data:
+            st.session_state["delete_data"] = data # stores data in session memory
+        else:
+            st.error("Student not found")
+            
+        curObj.close()
+        con.close()
+    
+    if "delete_data" in st.session_state:
+        data = st.session_state["delete_data"]
+        
+        st.warning("Are you sure you want to delete this student?")
+        
+        st.write(f"ID:{data[0]}")
+        st.write(f"Name:{data[1]}")
+        st.write(f"Age:{data[2]}")
+        st.write(f"Email: {data[3]}")
+        st.write(f"Course: {data[4]}")
+        
+        col1, col2 = st.columns(2) # better UI layout and two columns
+        
+        with col1:
+            if st.button("Yes, Delete"):
+                con = dbConnection()
+                curObj = con.cursor()
+                
+                query = "delete from student where id = %s"
+                curObj.execute(query, (id,))
+                con.commit() # save changes permanently
+                
+                st.success("Student deleted successfully!!")
+                
+                curObj.close()
+                con.close()
+                
+                del st.session_state["delete_data"]
+                st.rerun() # reloads page and return to clean delete ui(refresh UI)
+            
+            with col2:
+                if st.button("Cancel"):
+                    del st.session_state["delete_data"] # clears stored data
+                    st.rerun()
+
+
 if menu == "Home":
     home()
 
@@ -197,4 +254,5 @@ elif menu == "Update Student":
     update_student()
 
 elif menu == "Delete Student":
-    st.info("Delete feature coming soon")
+    # st.info("Delete feature coming soon")
+    delete_student()
