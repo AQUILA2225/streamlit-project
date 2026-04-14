@@ -1,0 +1,17 @@
+employee_management/
+│
+├── app.py                  # Main Streamlit app
+│
+├── db/
+│   ├── connection.py       # Database connection
+│   ├── queries.py          # All SQL queries/functions
+│
+├── modules/
+│   ├── auth.py             # Login & authentication logic
+│   ├── admin.py            # Admin features
+│   ├── employee.py         # Employee features
+│
+├── utils/
+│   ├── helpers.py          # Common reusable functions
+│
+├── requirements.txt       # Dependencies
